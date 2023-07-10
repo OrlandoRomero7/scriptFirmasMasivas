@@ -1,12 +1,3 @@
-""" import pandas as pd
-
-ruta_archivo = "Empleados-OPERATIVO.xlsx"
-nombre_hoja = "Lista Empleados"
-
-# Saltar la primera fila y seleccionar solo las columnas 2 y 3
-datos_excel = pd.read_excel(ruta_archivo, sheet_name=nombre_hoja, skiprows=1, usecols="B:C")
-
-print(datos_excel.head()) """
 
 import pandas as pd
 import cairo
@@ -16,12 +7,13 @@ import shutil
 import subprocess
 import numpy as np
 
+
+
+
+#OPERATIVO
 ruta_archivo = "Empleados-OPERATIVO.xlsx"
 nombre_hoja = "Lista Empleados"
-
-# Leer el archivo de Excel y seleccionar las columnas 1 y 2
-datos_excel = pd.read_excel(ruta_archivo, sheet_name=nombre_hoja, usecols=[1, 2, 4, 5])
-
+datos_excel = pd.read_excel(ruta_archivo, sheet_name=nombre_hoja, usecols=[1, 2, 4, 5, 6, 7])
 # Extraer el nombre de la columna 1 y el texto de la columna 2
 nombre_completo = datos_excel.iloc[:, 0].str.split(" ", expand=True)
 nombre = nombre_completo[2]
@@ -29,6 +21,14 @@ primer_apellido = nombre_completo[0]
 puesto = datos_excel.iloc[:, 1]
 extension = datos_excel.iloc[:, 2]
 correo = datos_excel.iloc[:, 3]
+celular = datos_excel.iloc[:, 4]
+carrera = datos_excel.iloc[:, 5]
+ 
+
+
+
+
+
 
 # Variables globales para almacenar los textos de cada campo
 name = ""
@@ -37,9 +37,11 @@ email = ""
 cellphone = ""
 address_part1 = "Blvd. Teniente Azueta #130 int. 210"
 address_part2 = "Recinto Portuario, Ensenada B.C. C.P. 22800"
-telefone = "(646) 175.7732"
+telefone = ""
+num_ensenada = "(646) 175.7732"
+num_tijuana = "(646) "
 ext = ""
-
+studies = ""
 
 #print(nombre + " " + primer_apellido + " " + puesto)
 # Imprimir los valores extraídos junto con el texto de la columna 2
@@ -61,11 +63,11 @@ def mostrar_vista_previa():
     #x_name = 705
     #y_name = 40
     #x_position = 672
-    y_position = 62
-    x_telefone = 680
-    y_telefone = 95
-    x_ext = 810
-    y_ext = 95
+    #y_position = 62
+    #x_telefone = 680
+    #y_telefone = 95
+    #x_ext = 810
+    #y_ext = 95
     #x_email = 650
     
     #x_cellphone = 680
@@ -139,8 +141,72 @@ def mostrar_vista_previa():
     context.move_to(x_position, y_position)
     context.show_text(position) """
     #-------------------------------------------------
+    ######TELEFONE, EXT, CELLPHONE
+    if cellphone == "":
+        cuadro_tel_x = 645
+        cuadro_tel_y = 70
+        cuadro_tel_ancho = 290
+        cuadro_tel_alto = 50
+    else:
+        cuadro_tel_x = 645
+        cuadro_tel_y = 70
+        cuadro_tel_ancho = 290
+        cuadro_tel_alto = 60
 
-    #TELEFONE----------------------------------------
+    if ext == "":
+        telefone = num_ensenada
+    else:
+        telefone = num_ensenada + " ext. " + ext
+
+    telefone_extents = context.text_extents(telefone)
+    email_extents = context.text_extents(email)
+    cellphone_extents = context.text_extents(cellphone)
+
+    margen_vertical_tel = (cuadro_tel_alto - (telefone_extents.height + email_extents.height + cellphone_extents.height)) / 2
+
+    #####telefone
+    telefone_x = cuadro_tel_x + (cuadro_tel_ancho - telefone_extents.width) / 2
+    telefone_y = cuadro_tel_y + margen_vertical_tel + telefone_extents.height
+
+    if cellphone == "":
+        #####email
+        email_x = cuadro_tel_x + (cuadro_tel_ancho - email_extents.width) / 2
+        email_y = cuadro_tel_y + margen_vertical_tel + telefone_extents.height + 20
+    else:
+        #icono
+        icono = cairo.ImageSurface.create_from_png("images/WhatsappIcon.png")
+        ####cellphone
+        cellphone_x = cuadro_tel_x + (cuadro_tel_ancho - cellphone_extents.width) / 2
+        cellphone_y = cuadro_tel_y + margen_vertical_tel + telefone_extents.height + 20
+        icono_x = cellphone_x - 25
+        icono_y = cellphone_y - 15
+        # Dibujar el icono en el contexto como máscara
+        context.save()  # Guardar el estado actual del contexto
+        context.set_source_surface(icono, icono_x, icono_y)
+        context.paint_with_alpha(1)  # Utilizar la imagen como máscara con opacidad completa
+        context.restore()  # Restaurar el estado del contexto 
+        #####email
+        email_x = cuadro_tel_x + (cuadro_tel_ancho - email_extents.width) / 2
+        email_y = cuadro_tel_y + margen_vertical_tel + cellphone_extents.height + 40
+
+    context.rectangle(cuadro_tel_x, cuadro_tel_y, cuadro_tel_ancho, cuadro_tel_alto)
+    context.set_source_rgba(0, 0, 0, 0)
+
+    context.set_source_rgb(255, 255, 255)
+    context.move_to(telefone_x, telefone_y)
+    context.show_text(telefone)
+    if cellphone != "":
+        context.move_to(cellphone_x, cellphone_y)
+    context.show_text(cellphone)
+
+    context.move_to(email_x, email_y)
+    context.show_text(email)
+
+
+
+
+
+    """ #TELEFONE----------------------------------------
     context.move_to(x_telefone, y_telefone)
     context.show_text(telefone)
     #------------------------------------------------
@@ -204,7 +270,7 @@ def mostrar_vista_previa():
 
     #Dibujar
     
-    context.show_text(email)
+    context.show_text(email) """
     #-----------------------------------------------
 
     #ADDRESS-------------------------------------------
@@ -259,15 +325,28 @@ def save_result():
         #formatted_path = os.path.normpath(export_firma_folder)
         #subprocess.Popen(r'explorer /open,"{}"'.format(formatted_path))
 
-for nom, ape, pue, ex, co in zip(nombre, primer_apellido, puesto, extension, correo):
+for nom, ape, pue, ex, co, celu, carre in zip(nombre, primer_apellido, puesto, extension, correo, celular, carrera):
     name = nom + " " + ape
     name = custom_title(name)
+    studies = str(carre)
+    if studies == "nan": 
+        studies = ""
+    else:
+        studies = carre
+        name = studies + " " + name 
+        
     position = pue
+
     if np.isnan(ex):
         ext = ""
     else:
-        ext = " ext." + " " + str(ex).split(".")[0]
+        ext = str(ex).split(".")[0]
+
     email = str(co)
+    cellphone = str(celu)
+
+    if cellphone == "nan":
+        cellphone = "" 
     mostrar_vista_previa()
     save_result()
     #print(f"Nombre: {nom}, Apellido: {ape}, Puesto: {pue}") 
