@@ -8,8 +8,8 @@ import numpy as np
 
 
 #Leer excel de operativo
-ruta_archivo = "Empleados-OPERATIVO.xlsx"
-nombre_hoja = "Lista Empleados"
+ruta_archivo = "EmpleadosFirmasTijuana.xlsx"
+nombre_hoja = "Tijuana"
 datos_excel = pd.read_excel(ruta_archivo, sheet_name=nombre_hoja, usecols=[1, 2, 4, 5, 6, 7])
 
 #Se indica a que columna correspondra cada varaible
@@ -27,14 +27,17 @@ name = ""
 position = ""
 email = ""
 cellphone = ""
-address_part1 = "Blvd. Teniente Azueta #130 int. 210"
-address_part2 = "Recinto Portuario, Ensenada B.C. C.P. 22800"
+#address_part1 = "Blvd. Teniente Azueta #130 int. 210"
+#address_part2 = "Recinto Portuario, Ensenada B.C. C.P. 22800"
+address_part1 = "Av. Alejandro Von Humboldt 17618-Int. B,"
+address_part2 = "Garita de Otay, 22430 Tijuana, B.C."
 telefone = ""
 num_ensenada = "(646) 175.7732"
-num_tijuana = "(646) "
+num_tijuana = "(664) 624.8323"
 ext = ""
 studies = ""
 nameAndStudies = ""
+
 
 #Funcion que muestra los textos en la iamgen
 def mostrar_vista_previa():
@@ -49,18 +52,6 @@ def mostrar_vista_previa():
     context.select_font_face(font_path)
     context.set_source_rgb(255, 255, 255)  # Color del texto
     
-    if cellphone == "":
-        x_address_part1 = 622
-        y_address_part1 = 145
-        #x_address_part2 = 592
-        y_address_part2 = 165
-    else:
-        #global x_cellphone
-        x_address_part1 = 622
-        y_address_part1 = 160
-        #x_address_part2 = 592
-        y_address_part2 = 180
-
     ################ NAME AND POSITION ##############################
     cuadro_x = 685
     cuadro_y = 16
@@ -70,7 +61,7 @@ def mostrar_vista_previa():
     # Calcular la posición de los textos
     context.set_font_size(19)
     name_extends = context.text_extents(nameAndStudies)
-    context.set_font_size(18)
+    #context.set_font_size(18)
     position_extends = context.text_extents(position)
 
     margen_vertical = (cuadro_alto - (name_extends.height + position_extends.height)) / 2
@@ -88,31 +79,49 @@ def mostrar_vista_previa():
 
     # Dibujar los textos centrados dentro del cuadro
     context.set_source_rgb(255, 255, 255)  # Establecer color del texto
+    
+
     #context.set_font_size(19)
 
     context.move_to(name_x, name_y)
     context.show_text(nameAndStudies)
 
+    context.set_font_size(18)
     context.move_to(position_x, position_y)
     context.show_text(position)
 
     ##########################TELEFONE, EXT, CELLPHONE########################################
-
+    # Dimensiones Cuadro de texto telefono, correo, celular y address
     if cellphone == "":
         cuadro_tel_x = 645
         cuadro_tel_y = 70
         cuadro_tel_ancho = 290
         cuadro_tel_alto = 50
+        #cuadro address
+        cuadro_addr_x = 600
+        cuadro_addr_y = 125
+        cuadro_addr_ancho = 330
+        cuadro_addr_alto = 50
     else:
         cuadro_tel_x = 645
         cuadro_tel_y = 70
         cuadro_tel_ancho = 290
         cuadro_tel_alto = 60
+        #cuadro address
+        cuadro_addr_x = 600
+        cuadro_addr_y = 135
+        cuadro_addr_ancho = 330
+        cuadro_addr_alto = 50
 
-    if ext == "":
+    """ if ext == "":
         telefone = num_ensenada
     else:
-        telefone = num_ensenada + " ext." + ext
+        telefone = num_ensenada + " ext." + ext  """
+
+    if ext == "":
+        telefone = num_tijuana
+    else:
+        telefone = num_tijuana + " ext." + ext
 
     telefone_extents = context.text_extents(telefone)
     email_extents = context.text_extents(email)
@@ -159,23 +168,29 @@ def mostrar_vista_previa():
     context.show_text(email)
 
     ######################### ADDRESS ##################################
-    #address_part1
     context.set_font_size(17)
-    context.move_to(x_address_part1, y_address_part1)
+    address_part1_extents = context.text_extents(address_part1)
+    address_part2_extents = context.text_extents(address_part2)
+
+    margen_vertical_address = (cuadro_addr_alto - (address_part1_extents.height + address_part2_extents.height)) / 2
+
+    address_part1_x = cuadro_addr_x + (cuadro_addr_ancho - address_part1_extents.width) / 2
+    address_part1_y = cuadro_addr_y + margen_vertical_address+ address_part1_extents.height
+
+    address_part2_x = cuadro_addr_x + (cuadro_addr_ancho - address_part2_extents.width) / 2
+    address_part2_y = cuadro_addr_y + margen_vertical_address+ address_part1_extents.height + 20
+
+    context.rectangle(cuadro_addr_x, cuadro_addr_y, cuadro_addr_ancho, cuadro_addr_alto)
+    context.set_source_rgba(0, 0, 0, 0)
+    context.set_source_rgb(255, 255, 255)
+    
+    
+    context.move_to(address_part1_x, address_part1_y)
     context.show_text(address_part1)
-    # Mide el ancho del texto previo
-    extents = context.text_extents(address_part1)
-    ancho_address_part1 = extents.width
-    # Mide el ancho del texto a centrar
-    extents = context.text_extents(address_part2)
-    ancho_address_part2 = extents.width
-    # Calcula la posición X para centrar el texto
-    x_address_part2 = (x_address_part1 + ancho_address_part1/2) - (ancho_address_part2/2)
-    #Dibujar
-    #address_part2
-    context.move_to(x_address_part2, y_address_part2)
+
+    context.move_to(address_part2_x, address_part2_y)
     context.show_text(address_part2)
-    #-------------------------------------------------
+
 
     # Guarda la imagen modificada con todos los textos ya ingresados
     surface.write_to_png("imagen_modificada.png")
@@ -198,21 +213,18 @@ def format_cellphone(cellphone):
     return formatted_number
 
 #Se guarda cada firma en un folder, con el nombre de la persona
-user_homefolder = str(Path.home())   
+user_homefolder = str(Path.home()) 
 def save_result():
     global surface
     global name
     first_name_text = name
     if first_name_text != "":
-        export_firma_folder = (user_homefolder +
-                            '/Downloads/' + first_name_text)
+        operavio_folder = os.path.join(user_homefolder, 'Downloads', nombre_hoja)
+        os.makedirs(operavio_folder, exist_ok=True)
+        export_firma_folder = os.path.join(operavio_folder, first_name_text)
+        os.makedirs(export_firma_folder, exist_ok=True)
         export_file_name = first_name_text + ".png"
-        if os.path.exists(export_firma_folder):
-            shutil.rmtree(export_firma_folder)
-        os.makedirs(export_firma_folder)
-        export_front = (export_firma_folder + '/' +
-                        'Frente_' + export_file_name)
-
+        export_front = os.path.join(export_firma_folder, 'Frente_' + export_file_name)
         surface.write_to_png(export_front)
 
 # Recorre cada fila y los valores se le asignan a las varaibles locales que son las que se insertan en la imagen
@@ -226,18 +238,20 @@ for nom, ape, pue, ex, co, celu, carre in zip(nombre, primer_apellido, puesto, e
     else:
         studies = carre
         nameAndStudies = studies + " " + name 
-        
-    position = str(pue)
+      
+    position = custom_title(str(pue))
 
     if np.isnan(ex):
         ext = ""
     else:
         ext = str(ex).split(".")[0]
-
     email = str(co)
-    cellphone = format_cellphone(str(celu))
-
+    if email == "nan":
+        email = ""
+    cellphone = str(celu)
     if cellphone == "nan":
         cellphone = "" 
+    else:
+        cellphone = format_cellphone(cellphone)
     mostrar_vista_previa()
     save_result()
