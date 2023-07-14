@@ -54,9 +54,9 @@ def mostrar_vista_previa():
     
     ################ NAME AND POSITION ##############################
     cuadro_x = 685
-    cuadro_y = 16
+    cuadro_y = 14
     cuadro_ancho = 250
-    cuadro_alto = 50
+    cuadro_alto = 60
 
     # Calcular la posición de los textos
     context.set_font_size(19)
@@ -73,8 +73,8 @@ def mostrar_vista_previa():
     position_y = cuadro_y + margen_vertical + name_extends.height + 20
 
     # Dibujar el cuadro de texto transparente
-    context.rectangle(cuadro_x, cuadro_y, cuadro_ancho, cuadro_alto)
-    context.set_source_rgba(0, 0, 0, 0)
+    #context.rectangle(cuadro_x, cuadro_y, cuadro_ancho, cuadro_alto)
+    #context.set_source_rgba(0, 0, 0, 0)
     #context.fill()
 
     # Dibujar los textos centrados dentro del cuadro
@@ -82,7 +82,7 @@ def mostrar_vista_previa():
     
 
     #context.set_font_size(19)
-
+    #context.set_font_size(19)
     context.move_to(name_x, name_y)
     context.show_text(nameAndStudies)
 
@@ -98,7 +98,7 @@ def mostrar_vista_previa():
         cuadro_tel_ancho = 290
         cuadro_tel_alto = 50
         #cuadro address
-        cuadro_addr_x = 600
+        cuadro_addr_x = 580
         cuadro_addr_y = 125
         cuadro_addr_ancho = 330
         cuadro_addr_alto = 50
@@ -108,7 +108,7 @@ def mostrar_vista_previa():
         cuadro_tel_ancho = 290
         cuadro_tel_alto = 60
         #cuadro address
-        cuadro_addr_x = 600
+        cuadro_addr_x = 580
         cuadro_addr_y = 135
         cuadro_addr_ancho = 330
         cuadro_addr_alto = 50
@@ -116,12 +116,12 @@ def mostrar_vista_previa():
     """ if ext == "":
         telefone = num_ensenada
     else:
-        telefone = num_ensenada + " ext." + ext  """
+        telefone = num_ensenada + " ext." + ext """
 
     if ext == "":
         telefone = num_tijuana
     else:
-        telefone = num_tijuana + " ext." + ext
+        telefone = num_tijuana + " ext." + ext 
 
     telefone_extents = context.text_extents(telefone)
     email_extents = context.text_extents(email)
